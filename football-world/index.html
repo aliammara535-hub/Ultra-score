@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Football World – Live Football Scores &amp; Statistics Platform | Ultra Score</title>
+  <meta name="description" content="Real-time live football scores, fixtures, historical results, competition standings, tactical lineups, and detailed match statistics." />
+  <link rel="icon" type="image/svg+xml" href="assets/logos/logo.svg" />
+
+  <!-- CSS Stylesheets in Modular Order -->
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/matches.css" />
+  <link rel="stylesheet" href="css/match-details.css" />
+  <link rel="stylesheet" href="css/lineups.css" />
+  <link rel="stylesheet" href="css/statistics.css" />
+  <link rel="stylesheet" href="css/competitions.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+
+  <!-- Firebase SDK Compat Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+</head>
+<body>
+
+  <!-- =========================================
+       SITE HEADER & NAVIGATION
+       ========================================= -->
+  <header class="site-header">
+    <div class="header-container">
+      <!-- Left: Logo & Competitions Menu -->
+      <div class="header-left">
+        <a href="index.html" class="brand-link" title="Football World - Ultra Score">
+          <img src="assets/logos/logo.svg" alt="Football World Logo" class="brand-logo-img" />
+          <div class="brand-title">
+            <span class="brand-name">Football<span>World</span></span>
+            <span class="brand-tagline">Ultra Score Live Data</span>
+          </div>
+        </a>
+
+        <!-- Dedicated Competitions Menu (Upper-Left) -->
+        <div class="competitions-dropdown-wrapper">
+          <button class="btn-competitions-menu" id="competitions-menu-btn" aria-haspopup="true" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9H4a2 2 0 0 1-2-2V5h4"></path>
+              <path d="M18 9h2a2 2 0 0 0 2-2V5h-4"></path>
+              <path d="M4 5h16v7a8 8 0 0 1-16 0V5z"></path>
+              <path d="M12 17v4"></path>
+              <path d="M8 21h8"></path>
+            </svg>
+            <span>Competitions</span>
+            <span class="dropdown-arrow">▼</span>
+          </button>
+
+          <!-- Dropdown Navigation Panel -->
+          <div class="competitions-dropdown-panel" id="competitions-dropdown">
+            <div id="competitions-dropdown-list">
+              <!-- Populated dynamically by competitions.js -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Status Indicators & Settings -->
+      <div class="header-right">
+        <!-- Live Matches Count Badge -->
+        <a href="#live-section" class="live-pulse-badge" id="live-count-badge" style="display: none;" title="Active Live Matches">
+          <span class="pulse-dot"></span> 0 LIVE
+        </a>
+
+        <!-- Firebase Synchronization Status Badge -->
+        <div id="firebase-status-badge" class="status-pill status-firebase-standby" title="Firebase Realtime Database Status">
+          <span class="status-dot dot-cached"></span> Initializing...
+        </div>
+
+        <!-- Platform & Firebase Settings Modal Trigger -->
+        <button class="btn-icon" id="btn-open-settings" title="Firebase &amp; API Settings" aria-label="Settings">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- =========================================
+       MAIN CONTENT CONTAINER
+       ========================================= -->
+  <main class="main-content">
+    
+    <!-- VIEW 1: MAIN HOMEPAGE VIEW -->
+    <div id="home-page-view">
+      
+      <!-- Section A: Live Matches -->
+      <section class="live-matches-section" id="live-section">
+        <div class="section-header-row">
+          <h2 class="section-title">
+            <span class="live-pulse-badge">
+              <span class="pulse-dot"></span> LIVE
+            </span>
+            Live Matches In Progress
+          </h2>
+          <button class="btn btn-secondary" id="btn-refresh-live" title="Refresh Live Scores">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <polyline points="23 4 23 10 17 10"></polyline>
+              <polyline points="1 20 1 14 7 14"></polyline>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+            Refresh
+          </button>
+        </div>
+
+        <div id="live-matches-container">
+          <!-- Rendered dynamically by live-matches.js -->
+        </div>
+      </section>
+
+      <!-- Section B, C, D, E: Fixtures & Match Explorer -->
+      <section class="fixtures-section" id="fixtures-section">
+        <div class="section-header-row">
+          <h2 class="section-title">
+            Football Matches &amp; Fixtures
+          </h2>
+        </div>
+
+        <!-- Controls: Filters, Search, Competition Select, Date Nav Strip -->
+        <div class="fixtures-control-bar">
+          <div class="filter-row-top">
+            <!-- Sub-filters: All, Live, Finished, Upcoming -->
+            <div class="filter-tabs-group">
+              <button class="filter-tab-btn active" data-filter="all" onclick="Fixtures.setFilter('all')">All Matches</button>
+              <button class="filter-tab-btn" data-filter="live" onclick="Fixtures.setFilter('live')">Live</button>
+              <button class="filter-tab-btn" data-filter="finished" onclick="Fixtures.setFilter('finished')">Finished (FT)</button>
+              <button class="filter-tab-btn" data-filter="upcoming" onclick="Fixtures.setFilter('upcoming')">Upcoming</button>
+            </div>
+
+            <!-- Inputs: Search & Competition Picker & Date Picker -->
+            <div class="filter-row-inputs">
+              <div class="search-input-box">
+                <span class="search-icon">🔍</span>
+                <input type="text" id="match-search-input" placeholder="Search club or tournament..." aria-label="Search Matches" />
+              </div>
+
+              <select id="fixture-competition-select" class="comp-select-dropdown" aria-label="Select Competition">
+                <!-- Populated dynamically by app.js -->
+              </select>
+
+              <div class="date-picker-box" title="Select Any Date">
+                <input type="date" id="fixture-date-picker" aria-label="Choose Date" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Date Navigation Strip (Historical & Future) -->
+          <div id="date-nav-strip">
+            <!-- Populated dynamically by fixtures.js -->
+          </div>
+        </div>
+
+        <!-- Fixtures Container -->
+        <div id="fixtures-container">
+          <!-- Rendered dynamically by fixtures.js -->
+        </div>
+      </section>
+
+    </div>
+
+    <!-- VIEW 2: DEDICATED COMPETITION PAGE VIEW -->
+    <div id="competition-page-view" style="display: none;">
+      <!-- Rendered dynamically by competitions.js -->
+    </div>
+
+  </main>
+
+  <!-- =========================================
+       DEDICATED MATCH DETAILS MODAL (PAGE VIEW)
+       ========================================= -->
+  <div class="match-modal-overlay" id="match-details-modal">
+    <div class="match-modal-container" id="match-modal-container">
+      <!-- Populated dynamically by match-details.js -->
+    </div>
+  </div>
+
+  <!-- =========================================
+       FOOTER
+       ========================================= -->
+  <footer class="site-footer">
+    <div class="footer-container">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <img src="assets/logos/logo.svg" alt="Football World Logo" width="32" height="32" />
+          <span class="brand-name">Football<span>World</span></span>
+        </div>
+        <p class="footer-note">
+          Delivering real-time authentic scores, starting lineups with formations, chronological match events, and accurate match statistics. All times are displayed in your local device timezone.
+        </p>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2026 Football World – Ultra Score Platform. All rights reserved.</span>
+        <span>Powered by Official Football Data API &amp; Firebase Realtime Database</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- =========================================
+       JAVASCRIPT MODULES IN DEPENDENCY ORDER
+       ========================================= -->
+  <script src="js/utils.js"></script>
+  <script src="js/cache-manager.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/database-service.js"></script>
+  <script src="js/api-config.js"></script>
+  <script src="js/api-service.js"></script>
+  <script src="js/live-matches.js"></script>
+  <script src="js/fixtures.js"></script>
+  <script src="js/match-events.js"></script>
+  <script src="js/lineups.js"></script>
+  <script src="js/statistics.js"></script>
+  <script src="js/match-details.js"></script>
+  <script src="js/standings.js"></script>
+  <script src="js/competitions.js"></script>
+  <script src="js/teams.js"></script>
+  <script src="js/players.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

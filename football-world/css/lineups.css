@@ -1,0 +1,336 @@
+/**
+ * Ultra Score / Football World - Lineups & Tactical Pitch Styles
+ */
+
+.lineups-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.lineups-header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #141f18;
+  border: 1px solid var(--color-card-border);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.team-formation-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.formation-team {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.formation-code {
+  background: #1d3326;
+  border: 1px solid var(--color-green-secondary);
+  color: var(--color-green-primary);
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  font-size: 0.85rem;
+}
+
+.status-official {
+  background: rgba(0, 210, 106, 0.15);
+  color: var(--color-green-primary);
+  border: 1px solid var(--color-green-primary);
+}
+
+.status-expected {
+  background: rgba(160, 170, 164, 0.15);
+  color: var(--color-muted-gray);
+  border: 1px solid var(--color-muted-gray);
+}
+
+/* =========================================
+   TACTICAL FOOTBALL PITCH
+   ========================================= */
+.tactical-pitch-container {
+  width: 100%;
+  max-width: 640px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.5);
+  border: 2px solid #1a3c2a;
+}
+
+.tactical-pitch {
+  position: relative;
+  width: 100%;
+  min-height: 720px;
+  background-color: #0c2016;
+  background-image: url('../assets/images/pitch.svg');
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1rem;
+}
+
+.pitch-half {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding: 1rem 0;
+  position: relative;
+  z-index: 2;
+}
+
+.pitch-half-divider {
+  height: 2px;
+  width: 100%;
+  opacity: 0.4;
+}
+
+.pitch-formation-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+  padding: 0.5rem 0;
+}
+
+/* Player Pin */
+.pitch-player-pin {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  min-width: 60px;
+}
+
+.pitch-player-pin:hover {
+  transform: translateY(-4px) scale(1.08);
+}
+
+.player-photo-circle {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #111a14;
+  border: 2px solid var(--color-green-primary);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.6);
+  overflow: visible;
+}
+
+.away-pin .player-photo-circle {
+  border-color: #A0AAA4;
+}
+
+.gk-pin .player-photo-circle {
+  border-color: #FFCC00;
+}
+
+.player-photo-circle img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.player-jersey-number {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--color-deep-black);
+  border: 1px solid var(--color-green-primary);
+  color: var(--color-white);
+  font-size: 0.65rem;
+  font-weight: 800;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.away-pin .player-jersey-number {
+  border-color: #A0AAA4;
+}
+
+.pin-sub-badge {
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 0.65rem;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.sub-in {
+  background: var(--color-green-primary);
+}
+
+.sub-out {
+  background: var(--color-red-card);
+}
+
+.pitch-player-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--color-white);
+  text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9), 0 0 8px rgba(0, 0, 0, 0.8);
+  white-space: nowrap;
+  max-width: 75px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+  background: rgba(8, 11, 10, 0.6);
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-sm);
+}
+
+/* =========================================
+   COACHES ROW
+   ========================================= */
+.coaches-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #141f18;
+  border: 1px solid var(--color-card-border);
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-md);
+  flex-wrap: wrap;
+}
+
+.coach-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.coach-label {
+  font-size: 0.75rem;
+  color: var(--color-muted-gray);
+  text-transform: uppercase;
+}
+
+.coach-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+/* =========================================
+   SUBSTITUTES BENCH
+   ========================================= */
+.substitutes-section {
+  background: #141f18;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+}
+
+.subs-heading {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--color-white);
+}
+
+.subs-dual-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.subs-team-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-green-primary);
+  margin-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-card-border);
+  padding-bottom: 0.4rem;
+}
+
+.subs-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.sub-item-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.45rem 0.6rem;
+  background: #101913;
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(255, 255, 255, 0.03);
+}
+
+.sub-item-row.was-subbed-in {
+  border-left: 3px solid var(--color-green-primary);
+}
+
+.sub-photo {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+  background: #080B0A;
+}
+
+.sub-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex: 1;
+  overflow: hidden;
+}
+
+.sub-jersey {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--color-muted-gray);
+}
+
+.sub-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-white);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sub-pos {
+  font-size: 0.75rem;
+  color: var(--color-muted-gray);
+  margin-left: auto;
+}
+
+.sub-in-tag {
+  font-size: 0.65rem;
+  background: rgba(0, 210, 106, 0.15);
+  color: var(--color-green-primary);
+  padding: 0.15rem 0.4rem;
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+}

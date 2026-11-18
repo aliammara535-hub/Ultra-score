@@ -1,0 +1,515 @@
+/**
+ * Ultra Score / Football World - Competitions & Standings Styles
+ */
+
+/* =========================================
+   COMPETITIONS DROPDOWN MENU
+   ========================================= */
+.menu-category-title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-green-primary);
+  letter-spacing: 0.8px;
+  padding: 0.6rem 0.75rem 0.35rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  margin-top: 0.5rem;
+}
+
+.menu-category-title:first-child {
+  margin-top: 0;
+}
+
+.menu-category-items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding-top: 0.25rem;
+}
+
+.menu-comp-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.55rem 0.75rem;
+  border-radius: var(--radius-sm);
+  transition: var(--transition-fast);
+  color: var(--color-white);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.menu-comp-item:hover {
+  background: #192a20;
+  color: var(--color-green-primary);
+  transform: translateX(3px);
+}
+
+.menu-comp-icon {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+.menu-comp-name {
+  flex: 1;
+}
+
+.menu-comp-flag {
+  font-size: 0.85rem;
+}
+
+/* =========================================
+   COMPETITION PAGE VIEW
+   ========================================= */
+.comp-page-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.comp-nav-bar {
+  display: flex;
+  align-items: center;
+}
+
+.btn-back-home {
+  background: #141f18;
+  border: 1px solid var(--color-card-border);
+  color: var(--color-white);
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition-fast);
+}
+
+.btn-back-home:hover {
+  background: var(--color-green-secondary);
+  border-color: var(--color-green-primary);
+}
+
+/* Hero Overview Card */
+.comp-hero-card {
+  background: radial-gradient(circle at top right, #1d3326 0%, #101913 75%);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: 2rem;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.4);
+}
+
+.comp-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.comp-hero-logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.6));
+}
+
+.comp-hero-titles {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comp-country-tag {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-green-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.comp-hero-title {
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: var(--color-white);
+  letter-spacing: -0.5px;
+}
+
+.comp-hero-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  font-size: 0.9rem;
+  color: var(--color-muted-gray);
+  margin-top: 0.35rem;
+}
+
+.hero-meta-item strong {
+  color: var(--color-white);
+}
+
+/* Sub-tabs */
+.comp-subtabs-nav {
+  display: flex;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-card-border);
+  padding-bottom: 0.25rem;
+  overflow-x: auto;
+}
+
+.comp-subtab-btn {
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  color: var(--color-muted-gray);
+  padding: 0.75rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: var(--transition-fast);
+}
+
+.comp-subtab-btn:hover {
+  color: var(--color-white);
+}
+
+.comp-subtab-btn.active {
+  color: var(--color-green-primary);
+  border-bottom-color: var(--color-green-primary);
+}
+
+/* =========================================
+   STANDINGS TABLE
+   ========================================= */
+.standings-table-container {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.9rem;
+}
+
+.standings-table th {
+  background: #0d1410;
+  color: var(--color-muted-gray);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 1rem 0.75rem;
+  border-bottom: 1px solid var(--color-card-border);
+}
+
+.standings-table td {
+  padding: 0.85rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+  color: var(--color-white);
+}
+
+.standings-row:hover {
+  background: #17241d;
+}
+
+/* Zone qualification indicator strip */
+.standings-row.zone-champions {
+  border-left: 4px solid var(--color-green-primary);
+}
+
+.standings-row.zone-europa {
+  border-left: 4px solid #0099ff;
+}
+
+.standings-row.zone-relegation {
+  border-left: 4px solid var(--color-red-card);
+}
+
+.pos-badge {
+  font-weight: 800;
+  color: var(--color-muted-gray);
+  display: inline-block;
+  min-width: 20px;
+}
+
+.zone-champions .pos-badge {
+  color: var(--color-green-primary);
+}
+
+.club-cell {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.club-cell:hover .club-title {
+  color: var(--color-green-primary);
+}
+
+.table-club-logo {
+  width: 26px;
+  height: 26px;
+  object-fit: contain;
+}
+
+.th-num, .td-num {
+  text-align: center;
+}
+
+.th-pts, .td-pts {
+  text-align: center;
+  font-size: 1rem;
+  color: var(--color-green-primary);
+}
+
+.gd-positive {
+  color: var(--color-green-primary);
+  font-weight: 700;
+}
+
+.gd-negative {
+  color: var(--color-red-card);
+}
+
+.gd-neutral {
+  color: var(--color-muted-gray);
+}
+
+/* Legend */
+.standings-legend {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  padding: 1rem 1.25rem;
+  font-size: 0.75rem;
+  color: var(--color-muted-gray);
+  border-top: 1px solid var(--color-card-border);
+  background: #0d1410;
+  flex-wrap: wrap;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.dot-champions {
+  background-color: var(--color-green-primary);
+}
+
+.dot-europa {
+  background-color: #0099ff;
+}
+
+.dot-relegation {
+  background-color: var(--color-red-card);
+}
+
+/* =========================================
+   LEAGUE STATS DASHBOARD
+   ========================================= */
+.league-stats-dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.stats-grid-heading {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.league-stat-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.25rem;
+}
+
+.league-stat-card {
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  border-bottom: 1px solid var(--color-card-border);
+  padding-bottom: 0.6rem;
+}
+
+.card-icon-tag {
+  font-size: 1.2rem;
+}
+
+.card-top h4 {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.stat-ranking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.stat-rank-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.4rem 0.5rem;
+  background: #0f1612;
+  border-radius: var(--radius-sm);
+}
+
+.rank-num {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--color-green-primary);
+  width: 20px;
+}
+
+.rank-logo {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
+
+.rank-name {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-white);
+  flex: 1;
+}
+
+.rank-metric {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--color-green-primary);
+}
+
+/* =========================================
+   TEAM PROFILE MODAL
+   ========================================= */
+.team-modal-card {
+  background: #111a14;
+  border: 1px solid var(--color-card-border);
+  border-radius: var(--radius-xl);
+  width: 100%;
+  max-width: 520px;
+  padding: 2rem;
+  position: relative;
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.8);
+}
+
+.team-modal-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(255, 255, 255, 0.08);
+  border: none;
+  color: var(--color-white);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.team-header-profile {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.team-profile-badge,
+.player-profile-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: contain;
+  background: #080B0A;
+  border: 2px solid var(--color-green-primary);
+}
+
+.team-profile-name {
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--color-white);
+}
+
+.team-profile-sub,
+.player-shirt-tag {
+  font-size: 0.85rem;
+  color: var(--color-muted-gray);
+}
+
+.team-quick-stats,
+.player-meta-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.quick-stat-box {
+  background: #141f18;
+  border: 1px solid var(--color-card-border);
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.stat-box-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--color-muted-gray);
+}
+
+.stat-box-val {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-white);
+}
+
+.text-green {
+  color: var(--color-green-primary);
+}
+
+.team-club-notice {
+  font-size: 0.85rem;
+  color: var(--color-muted-gray);
+  line-height: 1.5;
+  background: #0f1612;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  margin-bottom: 1.5rem;
+}
+
+.team-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+}

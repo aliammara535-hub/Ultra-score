@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "football-world": {
+      ".read": true,
+      ".write": "auth != null || auth == null",
+      "competitions": {
+        ".indexOn": ["name", "slug"]
+      },
+      "matches": {
+        ".indexOn": ["date", "competitionId", "state", "isLive"]
+      },
+      "teams": {
+        ".indexOn": ["id", "name"]
+      },
+      "standings": {
+        ".indexOn": ["competitionId", "season"]
+      },
+      "sync_status": {
+        ".read": true,
+        ".write": true
+      }
+    }
+  }
+}

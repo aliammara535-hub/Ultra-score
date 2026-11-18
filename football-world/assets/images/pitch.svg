@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 700 1000" width="700" height="1000">
+  <defs>
+    <linearGradient id="grassStripes" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#0c2419" />
+      <stop offset="100%" stop-color="#081b12" />
+    </linearGradient>
+    <pattern id="lawn" width="100" height="80" patternUnits="userSpaceOnUse">
+      <rect width="100" height="40" fill="#0d261a" opacity="0.4" />
+      <rect y="40" width="100" height="40" fill="#081810" opacity="0.4" />
+    </pattern>
+  </defs>
+
+  <!-- Pitch Background -->
+  <rect width="700" height="1000" fill="url(#grassStripes)" rx="16" />
+  <rect width="700" height="1000" fill="url(#lawn)" rx="16" />
+
+  <!-- Outer Pitch Boundary Line -->
+  <rect x="40" y="40" width="620" height="920" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" rx="6" />
+
+  <!-- Halfway Line -->
+  <line x1="40" y1="500" x2="660" y2="500" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+
+  <!-- Center Circle & Spot -->
+  <circle cx="350" cy="500" r="90" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <circle cx="350" cy="500" r="4.5" fill="#00D26A" opacity="0.8" />
+
+  <!-- Top (Away) Goal & Penalty Area -->
+  <rect x="180" y="40" width="340" height="150" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Goal Area -->
+  <rect x="260" y="40" width="180" height="55" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Penalty Spot -->
+  <circle cx="350" cy="140" r="4" fill="#00D26A" opacity="0.8" />
+  <!-- Penalty Arc -->
+  <path d="M 285 190 A 90 90 0 0 0 415 190" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Goal Net Indicator -->
+  <rect x="290" y="22" width="120" height="18" fill="none" stroke="#A0AAA4" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.4" />
+
+  <!-- Bottom (Home) Goal & Penalty Area -->
+  <rect x="180" y="810" width="340" height="150" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Goal Area -->
+  <rect x="260" y="905" width="180" height="55" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Penalty Spot -->
+  <circle cx="350" cy="860" r="4" fill="#00D26A" opacity="0.8" />
+  <!-- Penalty Arc -->
+  <path d="M 285 810 A 90 90 0 0 1 415 810" fill="none" stroke="#00D26A" stroke-width="2.5" opacity="0.6" />
+  <!-- Goal Net Indicator -->
+  <rect x="290" y="960" width="120" height="18" fill="none" stroke="#A0AAA4" stroke-width="1.5" stroke-dasharray="3,3" opacity="0.4" />
+
+  <!-- Corner Arcs -->
+  <path d="M 40 60 A 20 20 0 0 0 60 40" fill="none" stroke="#00D26A" stroke-width="2" opacity="0.6" />
+  <path d="M 640 40 A 20 20 0 0 0 660 60" fill="none" stroke="#00D26A" stroke-width="2" opacity="0.6" />
+  <path d="M 40 940 A 20 20 0 0 1 60 960" fill="none" stroke="#00D26A" stroke-width="2" opacity="0.6" />
+  <path d="M 640 960 A 20 20 0 0 1 660 940" fill="none" stroke="#00D26A" stroke-width="2" opacity="0.6" />
+</svg>

@@ -1,0 +1,8 @@
+# System & temporary scripts
+server.ps1
+*.tmp
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
