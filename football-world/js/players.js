@@ -1,12 +1,13 @@
 /**
  * Ultra Score / Football World - Players Module
- * Handles player profiles, authentic photographs, and statistics.
+ * Displays authentic player profiles, headshot photographs, jersey numbers,
+ * citizenship, and real season statistics (Goals, Assists, Appearances).
  */
 
 const Players = {
   modalId: 'player-modal',
 
-  open(playerData) {
+  openFromData(playerData, teamName = 'Football Club') {
     if (!playerData) return;
 
     let modal = document.getElementById(this.modalId);
@@ -20,40 +21,108 @@ const Players = {
     modal.classList.add('active');
     document.body.classList.add('modal-open');
 
+    // Extract statistics from splits/categories
+    const statsCategories = playerData.stats || [];
+    let appearances = '0';
+    let goals = '0';
+    let assists = '0';
+    let yellowCards = '0';
+    let redCards = '0';
+    let saves = null;
+    let shots = '0';
+
+    statsCategories.forEach(cat => {
+      const stats = cat.stats || [];
+      stats.forEach(s => {
+        if (s.name === 'appearances' || s.name === 'APP') appearances = s.displayValue || String(s.value);
+        if (s.name === 'totalGoals' || s.name === 'G') goals = s.displayValue || String(s.value);
+        if (s.name === 'goalAssists' || s.name === 'A') assists = s.displayValue || String(s.value);
+        if (s.name === 'yellowCards' || s.name === 'YC') yellowCards = s.displayValue || String(s.value);
+        if (s.name === 'redCards' || s.name === 'RC') redCards = s.displayValue || String(s.value);
+        if (s.name === 'saves' || s.name === 'SV') saves = s.displayValue || String(s.value);
+        if (s.name === 'totalShots') shots = s.displayValue || String(s.value);
+      });
+    });
+
+    const isGoalkeeper = (playerData.position || '').toLowerCase().includes('goal') || playerData.position === 'G';
+
     modal.innerHTML = `
       <div class="team-modal-card player-modal-card">
         <button class="team-modal-close" onclick="Players.close()">✕</button>
 
-        <div class="team-header-profile">
-          <img src="${playerData.photo}" alt="${playerData.name}" class="player-profile-photo" onerror="Utils.handleImageError(this, 'player', '${playerData.name}')"/>
-          <div class="team-profile-info">
-            <h2 class="team-profile-name">${playerData.name}</h2>
-            <span class="player-shirt-tag">#${playerData.jersey || '-'} • ${playerData.position || 'Player'}</span>
+        <div class="player-profile-hero">
+          <div class="player-photo-hero-wrap">
+            <img src="${playerData.photo}" alt="${playerData.name}" class="player-hero-img" onerror="Utils.handleImageError(this, 'player', '${playerData.name}')"/>
+            <span class="player-hero-num">#${playerData.jersey || '-'}</span>
           </div>
-        </div>
 
-        <div class="player-profile-body">
-          <div class="player-meta-grid">
-            <div class="quick-stat-box">
-              <span class="stat-box-label">Position</span>
-              <span class="stat-box-val">${playerData.position || 'Outfield'}</span>
-            </div>
-            <div class="quick-stat-box">
-              <span class="stat-box-label">Shirt Number</span>
-              <span class="stat-box-val">#${playerData.jersey || '-'}</span>
-            </div>
-            <div class="quick-stat-box">
-              <span class="stat-box-label">Lineup Status</span>
-              <span class="stat-box-val text-green">${playerData.starter ? 'Starting XI' : 'Substitute'}</span>
+          <div class="player-hero-details">
+            <h2 class="player-hero-name">${playerData.name}</h2>
+            <div class="player-hero-badges">
+              <span class="player-badge-pill">${teamName}</span>
+              <span class="player-badge-pill pill-pos">${playerData.position}</span>
+              ${playerData.citizenship ? `<span class="player-badge-pill">🌍 ${playerData.citizenship}</span>` : ''}
             </div>
           </div>
         </div>
 
-        <div class="team-modal-actions">
+        <!-- Official Season Statistics -->
+        <div class="player-stats-section">
+          <h4 class="player-stats-heading">Official Season Performance</h4>
+          <div class="player-stats-grid">
+            <div class="player-stat-tile">
+              <span class="stat-tile-val text-green">${appearances}</span>
+              <span class="stat-tile-label">Appearances</span>
+            </div>
+
+            ${isGoalkeeper ? `
+              <div class="player-stat-tile">
+                <span class="stat-tile-val text-green">${saves || '0'}</span>
+                <span class="stat-tile-label">Saves</span>
+              </div>
+            ` : `
+              <div class="player-stat-tile">
+                <span class="stat-tile-val text-green">${goals}</span>
+                <span class="stat-tile-label">Goals</span>
+              </div>
+            `}
+
+            <div class="player-stat-tile">
+              <span class="stat-tile-val">${assists}</span>
+              <span class="stat-tile-label">Assists</span>
+            </div>
+
+            <div class="player-stat-tile">
+              <span class="stat-tile-val">${shots}</span>
+              <span class="stat-tile-label">Shots Taken</span>
+            </div>
+
+            <div class="player-stat-tile">
+              <span class="stat-tile-val text-yellow">${yellowCards}</span>
+              <span class="stat-tile-label">Yellow Cards</span>
+            </div>
+
+            <div class="player-stat-tile">
+              <span class="stat-tile-val text-red">${redCards}</span>
+              <span class="stat-tile-label">Red Cards</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="team-modal-actions" style="margin-top: 1.5rem;">
           <button class="btn btn-secondary" onclick="Players.close()">Close</button>
         </div>
       </div>
     `;
+
+    if (window.DatabaseService && playerData.id) {
+      DatabaseService.syncPlayer(playerData.id, playerData);
+    }
+  },
+
+  open(playerObj) {
+    if (!playerObj) return;
+    this.openFromData(playerObj, playerObj.teamName || 'Football Club');
   },
 
   close() {

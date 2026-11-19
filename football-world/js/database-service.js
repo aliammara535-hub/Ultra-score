@@ -84,6 +84,77 @@ const DatabaseService = {
   },
 
   /**
+   * Synchronize active live fixtures into football-world/live_matches
+   */
+  async syncLiveMatches(liveMatches = []) {
+    const ref = this._getRef('live_matches');
+    if (!ref) return false;
+
+    try {
+      const payload = {};
+      const timestamp = Date.now();
+      liveMatches.forEach(m => {
+        if (m.id) {
+          payload[m.id] = {
+            id: String(m.id),
+            date: m.date || '',
+            leagueId: m.leagueId || '',
+            competitionName: m.competitionName || '',
+            homeTeam: m.homeTeam || {},
+            awayTeam: m.awayTeam || {},
+            status: m.status || {},
+            lastSyncedAt: timestamp
+          };
+        }
+      });
+      await ref.set(payload);
+      await this.updateSyncStatus('live_matches', { count: liveMatches.length });
+      return true;
+    } catch (e) {
+      console.warn('[DatabaseService] syncLiveMatches error:', e.message);
+      return false;
+    }
+  },
+
+  /**
+   * Synchronize team profile and squad into football-world/teams/{teamId}
+   */
+  async syncTeam(teamId, teamData) {
+    if (!teamId || !teamData) return false;
+    const ref = this._getRef(`teams/${teamId}`);
+    if (!ref) return false;
+
+    try {
+      await ref.set({
+        ...teamData,
+        lastSyncedAt: Date.now()
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  /**
+   * Synchronize player stats and profile into football-world/players/{playerId}
+   */
+  async syncPlayer(playerId, playerData) {
+    if (!playerId || !playerData) return false;
+    const ref = this._getRef(`players/${playerId}`);
+    if (!ref) return false;
+
+    try {
+      await ref.set({
+        ...playerData,
+        lastSyncedAt: Date.now()
+      });
+      return true;
+    } catch (e) {
+      return false;
+    }
+  },
+
+  /**
    * Synchronize match details (events, lineups, statistics) into Firebase
    */
   async syncMatchDetails(matchId, detailsData) {

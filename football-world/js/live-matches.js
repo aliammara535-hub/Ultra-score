@@ -54,6 +54,10 @@ const LiveMatches = {
       const liveMatches = await ApiService.fetchLiveMatches(forceRefresh);
       this.render(liveMatches);
       this.updateLiveBadge(liveMatches.length);
+      // Sync to Firebase live_matches node
+      if (window.DatabaseService) {
+        DatabaseService.syncLiveMatches(liveMatches);
+      }
     } catch (e) {
       console.warn('[LiveMatches] Error fetching live matches:', e.message);
     } finally {
@@ -73,11 +77,11 @@ const LiveMatches = {
 
     if (!matches || matches.length === 0) {
       container.innerHTML = Utils.createEmptyStateHtml({
-        title: 'No Live Matches In Play',
-        message: 'There are currently no live football matches in progress. Browse today\'s upcoming fixtures or historical results below.',
+        title: 'Live Match Center: Active (0 In Play)',
+        message: 'There are currently no football matches in play right now across European Top 5 & International competitions. Full fixtures with live tracking for upcoming kickoffs are displayed below.',
         icon: 'live',
         actionBtn: {
-          text: 'View Today\'s Fixtures',
+          text: 'Explore Today\'s Fixtures',
           onClick: 'Fixtures.scrollToTodaysMatches()'
         }
       });
@@ -177,11 +181,13 @@ const LiveMatches = {
     if (!badge) return;
 
     if (count > 0) {
-      badge.textContent = count;
+      badge.innerHTML = `<span class="pulse-dot"></span> ${count} LIVE`;
       badge.style.display = 'inline-flex';
+      badge.title = `${count} Live Matches currently in play`;
     } else {
-      badge.textContent = '0';
-      badge.style.display = 'none';
+      badge.innerHTML = `<span class="pulse-dot" style="background:#556059;box-shadow:none;"></span> 0 LIVE`;
+      badge.style.display = 'inline-flex';
+      badge.title = 'Live match feed active - 0 matches currently in play';
     }
   }
 };

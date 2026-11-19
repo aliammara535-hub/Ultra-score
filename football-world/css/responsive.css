@@ -291,4 +291,52 @@
   .comp-hero-meta {
     justify-content: center;
   }
+
+  .global-search-wrapper {
+    max-width: 140px;
+    margin: 0 0.25rem;
+  }
+
+  .search-shortcut-badge {
+    display: none;
+  }
+
+  .global-search-box {
+    padding: 0.35rem 0.5rem;
+  }
+
+  .global-search-box input {
+    font-size: 0.75rem;
+  }
+
+  .global-search-results-panel {
+    min-width: 280px;
+    left: -60px;
+  }
+
+  .squad-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-profile-header, .squad-section, .player-profile-hero, .player-stats-section {
+    padding: 1.25rem 1rem;
+  }
+
+  .team-hero-crest {
+    width: 60px;
+    height: 60px;
+  }
+
+  .team-hero-name {
+    font-size: 1.35rem;
+  }
+
+  .player-photo-hero-wrap {
+    width: 72px;
+    height: 72px;
+  }
+
+  .player-hero-name {
+    font-size: 1.3rem;
+  }
 }

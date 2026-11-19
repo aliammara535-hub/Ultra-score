@@ -55,6 +55,13 @@ const Fixtures = {
         }
       });
     }
+
+    // React to user favorites changes
+    window.addEventListener('favoritesUpdated', () => {
+      if (this.activeFilter === 'favorites') {
+        this.applyFilterAndRender();
+      }
+    });
   },
 
   /**
@@ -178,6 +185,13 @@ const Fixtures = {
       filtered = filtered.filter(m => m.status.isFinished);
     } else if (this.activeFilter === 'upcoming') {
       filtered = filtered.filter(m => !m.status.isFinished && !m.status.isLive);
+    } else if (this.activeFilter === 'favorites') {
+      filtered = filtered.filter(m => {
+        const homeFav = window.Favorites?.isTeamFavorite(m.homeTeam?.id);
+        const awayFav = window.Favorites?.isTeamFavorite(m.awayTeam?.id);
+        const compFav = window.Favorites?.isCompFavorite(m.leagueId) || window.Favorites?.isCompFavorite(m.competitionId);
+        return homeFav || awayFav || compFav;
+      });
     }
 
     // Filter by search query
@@ -192,6 +206,19 @@ const Fixtures = {
 
     // Empty state
     if (filtered.length === 0) {
+      if (this.activeFilter === 'favorites') {
+        container.innerHTML = Utils.createEmptyStateHtml({
+          title: 'No Favorite Matches Scheduled',
+          message: 'None of your favorited clubs or competitions have matches scheduled on this date. Star your favorite clubs to track them here anytime.',
+          icon: 'live',
+          actionBtn: {
+            text: 'Browse All Matches',
+            onClick: "Fixtures.setFilter('all')"
+          }
+        });
+        return;
+      }
+
       let emptyMsg = `No matches found for ${Utils.formatLocalDate(this.selectedDate.toISOString(), 'short')}`;
       if (this.activeFilter !== 'all') {
         emptyMsg += ` matching '${this.activeFilter}' status`;
@@ -299,8 +326,11 @@ const Fixtures = {
 
         <div class="fixture-match-body">
           <!-- Home Team -->
-          <div class="team-block home-block">
-            <img src="${homeTeam.logo}" alt="${homeTeam.displayName}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${homeTeam.displayName}')"/>
+          <div class="team-block home-block" onclick="event.stopPropagation(); Teams.open('${homeTeam.id}', '${Utils.escapeHtml(homeTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <img src="${homeTeam.logo}" alt="${homeTeam.displayName}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${homeTeam.displayName}')"/>
+              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(homeTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${homeTeam.id}', displayName: '${Utils.escapeHtml(homeTeam.displayName)}', logo: '${homeTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${Utils.escapeHtml(homeTeam.displayName)}">★</button>
+            </div>
             <span class="team-title ${status.isFinished && homeTeam.score > awayTeam.score ? 'winner' : ''}">${homeTeam.displayName}</span>
           </div>
 
@@ -308,8 +338,11 @@ const Fixtures = {
           ${centerContentHtml}
 
           <!-- Away Team -->
-          <div class="team-block away-block">
-            <img src="${awayTeam.logo}" alt="${awayTeam.displayName}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${awayTeam.displayName}')"/>
+          <div class="team-block away-block" onclick="event.stopPropagation(); Teams.open('${awayTeam.id}', '${Utils.escapeHtml(awayTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+              <img src="${awayTeam.logo}" alt="${awayTeam.displayName}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${awayTeam.displayName}')"/>
+              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(awayTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${awayTeam.id}', displayName: '${Utils.escapeHtml(awayTeam.displayName)}', logo: '${awayTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${Utils.escapeHtml(awayTeam.displayName)}">★</button>
+            </div>
             <span class="team-title ${status.isFinished && awayTeam.score > homeTeam.score ? 'winner' : ''}">${awayTeam.displayName}</span>
           </div>
         </div>

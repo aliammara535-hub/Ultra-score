@@ -14,6 +14,8 @@ const App = {
     this.initCompetitionSelectors();
 
     // 3. Initialize modules
+    if (window.Favorites) Favorites.init();
+    if (window.GlobalSearch) GlobalSearch.init();
     Competitions.init();
     LiveMatches.init();
     Fixtures.init();
@@ -30,8 +32,14 @@ const App = {
    */
   initFirebase() {
     const statusPill = document.getElementById('firebase-status-badge');
+    if (statusPill) {
+      statusPill.innerHTML = '<span class="status-dot dot-cached"></span> Connecting...';
+    }
+
+    let hasHandshaked = false;
 
     FirebaseConfig.onConnectionChange((connected, details) => {
+      hasHandshaked = true;
       if (!statusPill) return;
 
       if (connected) {
@@ -44,6 +52,15 @@ const App = {
         statusPill.title = 'Operating via secure direct football API cache';
       }
     });
+
+    // Fallback: If Firebase WebSocket takes longer than 2.5s, ensure clean status
+    setTimeout(() => {
+      if (!hasHandshaked && statusPill && statusPill.textContent.includes('Connecting')) {
+        statusPill.innerHTML = '<span class="status-dot dot-cached"></span> Data Feed: Active';
+        statusPill.className = 'status-pill status-firebase-standby';
+        statusPill.title = 'Operating via secure direct football API feed';
+      }
+    }, 2500);
 
     // Try starting Firebase
     FirebaseConfig.init();

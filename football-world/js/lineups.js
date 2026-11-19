@@ -156,9 +156,10 @@ const Lineups = {
    */
   _renderPitchPlayerNode(player, isAway = false) {
     const isGK = player.position && (player.position.toLowerCase().includes('goal') || player.position === 'G');
+    const safePlayerJson = JSON.stringify(player).replace(/"/g, '&quot;');
 
     return `
-      <div class="pitch-player-pin ${isAway ? 'away-pin' : 'home-pin'} ${isGK ? 'gk-pin' : ''}">
+      <div class="pitch-player-pin ${isAway ? 'away-pin' : 'home-pin'} ${isGK ? 'gk-pin' : ''}" onclick="Players.openFromData(${safePlayerJson})" style="cursor: pointer;" title="View ${player.name} Profile">
         <div class="player-photo-circle">
           <img src="${player.photo}" alt="${player.name}" onerror="Utils.handleImageError(this, 'player', '${player.name}')" loading="lazy" />
           <span class="player-jersey-number">${player.jersey}</span>
@@ -178,17 +179,20 @@ const Lineups = {
       return '<div class="no-subs">No substitutes listed</div>';
     }
 
-    return subs.map(p => `
-      <div class="sub-item-row ${p.subbedIn ? 'was-subbed-in' : ''}">
-        <img src="${p.photo}" alt="${p.name}" class="sub-photo" onerror="Utils.handleImageError(this, 'player', '${p.name}')" loading="lazy"/>
-        <div class="sub-meta">
-          <span class="sub-jersey">#${p.jersey}</span>
-          <span class="sub-name">${p.name}</span>
-          <span class="sub-pos">${p.position}</span>
+    return subs.map(p => {
+      const safeJson = JSON.stringify(p).replace(/"/g, '&quot;');
+      return `
+        <div class="sub-item-row ${p.subbedIn ? 'was-subbed-in' : ''}" onclick="Players.openFromData(${safeJson})" style="cursor: pointer;" title="View ${p.name} Profile">
+          <img src="${p.photo}" alt="${p.name}" class="sub-photo" onerror="Utils.handleImageError(this, 'player', '${p.name}')" loading="lazy"/>
+          <div class="sub-meta">
+            <span class="sub-jersey">#${p.jersey}</span>
+            <span class="sub-name">${p.name}</span>
+            <span class="sub-pos">${p.position}</span>
+          </div>
+          ${p.subbedIn ? '<span class="sub-in-tag">Subbed In</span>' : ''}
         </div>
-        ${p.subbedIn ? '<span class="sub-in-tag">Subbed In</span>' : ''}
-      </div>
-    `).join('');
+      `;
+    }).join('');
   }
 };
 

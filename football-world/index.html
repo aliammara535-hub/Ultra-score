@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="css/lineups.css" />
   <link rel="stylesheet" href="css/statistics.css" />
   <link rel="stylesheet" href="css/competitions.css" />
+  <link rel="stylesheet" href="css/team-player.css" />
   <link rel="stylesheet" href="css/responsive.css" />
 
   <!-- Firebase SDK Compat Scripts -->
@@ -60,6 +61,19 @@
         </div>
       </div>
 
+      <!-- Center: Global Search Bar -->
+      <div class="global-search-wrapper" id="global-search-wrapper">
+        <div class="global-search-box">
+          <svg class="search-svg-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="global-search-input" placeholder="Search clubs, players, leagues... (Press /)" autocomplete="off" />
+          <span class="search-shortcut-badge">/</span>
+        </div>
+        <div class="global-search-results-panel" id="global-search-results" style="display: none;"></div>
+      </div>
+
       <!-- Right: Status Indicators & Settings -->
       <div class="header-right">
         <!-- Live Matches Count Badge -->
@@ -91,6 +105,9 @@
     <!-- VIEW 1: MAIN HOMEPAGE VIEW -->
     <div id="home-page-view">
       
+      <!-- User Favorites Quick Bar -->
+      <div id="favorites-bar-container" class="favorites-bar-section" style="display: none;"></div>
+
       <!-- Section A: Live Matches -->
       <section class="live-matches-section" id="live-section">
         <div class="section-header-row">
@@ -126,12 +143,13 @@
         <!-- Controls: Filters, Search, Competition Select, Date Nav Strip -->
         <div class="fixtures-control-bar">
           <div class="filter-row-top">
-            <!-- Sub-filters: All, Live, Finished, Upcoming -->
+            <!-- Sub-filters: All, Live, Finished, Upcoming, Favorites -->
             <div class="filter-tabs-group">
               <button class="filter-tab-btn active" data-filter="all" onclick="Fixtures.setFilter('all')">All Matches</button>
               <button class="filter-tab-btn" data-filter="live" onclick="Fixtures.setFilter('live')">Live</button>
               <button class="filter-tab-btn" data-filter="finished" onclick="Fixtures.setFilter('finished')">Finished (FT)</button>
               <button class="filter-tab-btn" data-filter="upcoming" onclick="Fixtures.setFilter('upcoming')">Upcoming</button>
+              <button class="filter-tab-btn" data-filter="favorites" onclick="Fixtures.setFilter('favorites')">⭐ Favorites</button>
             </div>
 
             <!-- Inputs: Search & Competition Picker & Date Picker -->
@@ -182,6 +200,12 @@
   </div>
 
   <!-- =========================================
+       TEAM & PLAYER PROFILE MODALS
+       ========================================= -->
+  <div class="team-modal-overlay" id="team-modal"></div>
+  <div class="team-modal-overlay" id="player-modal"></div>
+
+  <!-- =========================================
        FOOTER
        ========================================= -->
   <footer class="site-footer">
@@ -219,6 +243,8 @@
   <script src="js/match-details.js"></script>
   <script src="js/standings.js"></script>
   <script src="js/competitions.js"></script>
+  <script src="js/favorites.js"></script>
+  <script src="js/search.js"></script>
   <script src="js/teams.js"></script>
   <script src="js/players.js"></script>
   <script src="js/app.js"></script>
