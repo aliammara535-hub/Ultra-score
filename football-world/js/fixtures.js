@@ -4,6 +4,33 @@
  * finished results, and multi-criteria filtering.
  */
 
+// Defensive local escape helpers (ensures no dependency crash even if cache lags)
+function _escHtml(str) {
+  if (window.Utils && typeof window.Utils.escapeHtml === 'function') {
+    return window.Utils.escapeHtml(str);
+  }
+  if (str === undefined || str === null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+function _escJs(str) {
+  if (window.Utils && typeof window.Utils.escapeJs === 'function') {
+    return window.Utils.escapeJs(str);
+  }
+  if (str === undefined || str === null) return '';
+  return String(str)
+    .replace(/\\/g, '\\\\')
+    .replace(/'/g, "\\'")
+    .replace(/"/g, '\\"')
+    .replace(/\n/g, '\\n')
+    .replace(/\r/g, '\\r');
+}
+
 const Fixtures = {
   containerId: 'fixtures-container',
   datePickerId: 'fixture-date-picker',
@@ -209,7 +236,18 @@ const Fixtures = {
       this.cachedMatches = matches || [];
       this.applyFilterAndRender();
     } catch (e) {
-      this.applyFilterAndRender();
+      console.warn('[Fixtures] Error loading upcoming matches:', e.message);
+      this.cachedMatches = [];
+      try {
+        this.applyFilterAndRender();
+      } catch (err) {
+        container.innerHTML = Utils.createEmptyStateHtml({
+          title: 'Unable to Load Upcoming Matches',
+          message: 'Could not connect to the live match feed. Please retry in a few moments.',
+          icon: 'calendar',
+          actionBtn: { text: 'Retry', onClick: 'Fixtures.loadUpcomingMatches(true)' }
+        });
+      }
     } finally {
       this.isLoading = false;
     }
@@ -235,7 +273,18 @@ const Fixtures = {
       this.cachedMatches = matches || [];
       this.applyFilterAndRender();
     } catch (e) {
-      this.applyFilterAndRender();
+      console.warn('[Fixtures] Error loading finished matches:', e.message);
+      this.cachedMatches = [];
+      try {
+        this.applyFilterAndRender();
+      } catch (err) {
+        container.innerHTML = Utils.createEmptyStateHtml({
+          title: 'Unable to Load Completed Results',
+          message: 'Could not connect to the completed results feed. Please retry in a few moments.',
+          icon: 'calendar',
+          actionBtn: { text: 'Retry', onClick: 'Fixtures.loadFinishedMatches(true)' }
+        });
+      }
     } finally {
       this.isLoading = false;
     }
@@ -414,7 +463,14 @@ const Fixtures = {
           </div>
 
           <div class="matches-grid">
-            ${group.matches.map(m => this.createFixtureCardHtml(m)).join('')}
+            ${group.matches.map(m => {
+              try {
+                return this.createFixtureCardHtml(m);
+              } catch (cardErr) {
+                console.warn('[Fixtures] Match card render error for event', m?.id, cardErr.message);
+                return '';
+              }
+            }).join('')}
           </div>
         </div>
       `;
@@ -469,24 +525,24 @@ const Fixtures = {
 
         <div class="fixture-match-body">
           <!-- Home Team -->
-          <div class="team-block home-block" onclick="event.stopPropagation(); Teams.open('${homeTeam.id}', '${Utils.escapeJs(homeTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
+          <div class="team-block home-block" onclick="event.stopPropagation(); Teams.open('${homeTeam.id}', '${_escJs(homeTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
             <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <img src="${homeTeam.logo}" alt="${Utils.escapeHtml(homeTeam.displayName)}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${Utils.escapeJs(homeTeam.displayName)}')"/>
-              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(homeTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${homeTeam.id}', displayName: '${Utils.escapeJs(homeTeam.displayName)}', logo: '${homeTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${Utils.escapeHtml(homeTeam.displayName)}">★</button>
+              <img src="${homeTeam.logo}" alt="${_escHtml(homeTeam.displayName)}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${_escJs(homeTeam.displayName)}')"/>
+              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(homeTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${homeTeam.id}', displayName: '${_escJs(homeTeam.displayName)}', logo: '${homeTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${_escHtml(homeTeam.displayName)}">★</button>
             </div>
-            <span class="team-title ${status.isFinished && homeTeam.score > awayTeam.score ? 'winner' : ''}">${Utils.escapeHtml(homeTeam.displayName)}</span>
+            <span class="team-title ${status.isFinished && homeTeam.score > awayTeam.score ? 'winner' : ''}">${_escHtml(homeTeam.displayName)}</span>
           </div>
 
           <!-- Score / Time Center -->
           ${centerContentHtml}
 
           <!-- Away Team -->
-          <div class="team-block away-block" onclick="event.stopPropagation(); Teams.open('${awayTeam.id}', '${Utils.escapeJs(awayTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
+          <div class="team-block away-block" onclick="event.stopPropagation(); Teams.open('${awayTeam.id}', '${_escJs(awayTeam.displayName)}', '${match.leagueId}')" style="cursor: pointer;" title="View Club Profile &amp; Squad">
             <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-              <img src="${awayTeam.logo}" alt="${Utils.escapeHtml(awayTeam.displayName)}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${Utils.escapeJs(awayTeam.displayName)}')"/>
-              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(awayTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${awayTeam.id}', displayName: '${Utils.escapeJs(awayTeam.displayName)}', logo: '${awayTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${Utils.escapeHtml(awayTeam.displayName)}">★</button>
+              <img src="${awayTeam.logo}" alt="${_escHtml(awayTeam.displayName)}" class="team-badge-lg" onerror="Utils.handleImageError(this, 'team', '${_escJs(awayTeam.displayName)}')"/>
+              <button class="team-fav-btn ${window.Favorites?.isTeamFavorite(awayTeam.id) ? 'active' : ''}" onclick="event.stopPropagation(); Favorites.toggleTeam({ id: '${awayTeam.id}', displayName: '${_escJs(awayTeam.displayName)}', logo: '${awayTeam.logo}' }); this.classList.toggle('active');" title="Favorite ${_escHtml(awayTeam.displayName)}">★</button>
             </div>
-            <span class="team-title ${status.isFinished && awayTeam.score > homeTeam.score ? 'winner' : ''}">${Utils.escapeHtml(awayTeam.displayName)}</span>
+            <span class="team-title ${status.isFinished && awayTeam.score > homeTeam.score ? 'winner' : ''}">${_escHtml(awayTeam.displayName)}</span>
           </div>
         </div>
 
