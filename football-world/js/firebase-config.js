@@ -36,6 +36,9 @@ const FirebaseConfig = {
         const parsed = JSON.parse(custom);
         // Ignore legacy dummy configs
         if (parsed && parsed.projectId && !parsed.projectId.includes('ultra-score-football-world') && !parsed.apiKey?.includes('Dummy')) {
+          if (parsed.projectId === 'hemma-quiz' && (!parsed.databaseURL || !parsed.databaseURL.includes('europe-west1'))) {
+            parsed.databaseURL = this.defaultConfig.databaseURL;
+          }
           return parsed;
         }
       }
@@ -118,8 +121,8 @@ const FirebaseConfig = {
 
       // Explicitly pass regional databaseURL so regional instances connect correctly
       this.database = config.databaseURL 
-        ? firebase.database(config.databaseURL) 
-        : firebase.database();
+        ? this.app.database(config.databaseURL) 
+        : this.app.database();
         
       this.isInitialized = true;
 
@@ -127,10 +130,8 @@ const FirebaseConfig = {
       const connectedRef = this.database.ref('.info/connected');
       connectedRef.on('value', (snap) => {
         const val = Boolean(snap.val());
-        if (val) {
-          this.isConnected = true;
-          this._notifyConnection(true, 'Connected');
-        }
+        this.isConnected = val;
+        this._notifyConnection(val, val ? 'Connected' : 'Standby');
       });
 
       // Quick active probe to confirm read/write rights immediately
