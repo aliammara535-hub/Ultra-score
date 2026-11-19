@@ -376,6 +376,32 @@ const Utils = {
   },
 
   /**
+   * Escape HTML entities to prevent XSS and DOM breakage
+   */
+  escapeHtml(str) {
+    if (str === undefined || str === null) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  },
+
+  /**
+   * Escape string for safe insertion into JavaScript string literals inside HTML attributes
+   */
+  escapeJs(str) {
+    if (str === undefined || str === null) return '';
+    return String(str)
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r');
+  },
+
+  /**
    * Debounce helper
    */
   debounce(func, wait) {

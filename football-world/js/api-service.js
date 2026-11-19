@@ -6,6 +6,43 @@
 
 const ApiService = {
   /**
+   * Resilient fetch helper with proxy fallback for client-side CORS/adblocker resilience
+   */
+  async _fetchJson(url) {
+    // 1. Direct fetch
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('[ApiService] Direct fetch failed for', url, err.message);
+    }
+
+    // 2. Fallback via CORS proxy (allorigins)
+    try {
+      const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`;
+      const res = await fetch(proxyUrl);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {
+      console.warn('[ApiService] Proxy fallback failed:', err.message);
+    }
+
+    // 3. Fallback via secondary CORS proxy
+    try {
+      const proxyUrl2 = `https://corsproxy.io/?${encodeURIComponent(url)}`;
+      const res = await fetch(proxyUrl2);
+      if (res.ok) {
+        return await res.json();
+      }
+    } catch (err) {}
+
+    throw new Error(`All fetch attempts failed for ${url}`);
+  },
+
+  /**
    * Fetch scoreboard for a single competition and optional date (YYYYMMDD)
    */
   async fetchScoreboard(leagueId, dateStr = null, forceRefresh = false) {
@@ -19,12 +56,7 @@ const ApiService = {
     const url = ApiConfig.getScoreboardUrl(leagueId, dateStr);
 
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status} fetching ${leagueId}`);
-      }
-
-      const data = await response.json();
+      const data = await this._fetchJson(url);
       const normalizedMatches = this._normalizeScoreboardEvents(data, leagueId);
 
       // Determine appropriate TTL
@@ -173,12 +205,7 @@ const ApiService = {
     const url = ApiConfig.getSummaryUrl(leagueId, eventId);
 
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status} fetching summary for event ${eventId}`);
-      }
-
-      const data = await response.json();
+      const data = await this._fetchJson(url);
       const normalizedDetails = this._normalizeMatchSummary(data, leagueId, eventId);
 
       const isLive = normalizedDetails.header?.status?.isLive;
@@ -212,12 +239,7 @@ const ApiService = {
     const url = ApiConfig.getStandingsUrl(leagueId);
 
     try {
-      const response = await fetch(url);
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status} fetching standings for ${leagueId}`);
-      }
-
-      const data = await response.json();
+      const data = await this._fetchJson(url);
       const normalizedStandings = this._normalizeStandings(data, leagueId);
 
       window.appCache.set(cacheKey, normalizedStandings, window.appCache.TTL.STANDINGS);
@@ -270,7 +292,7 @@ const ApiService = {
           displayName: homeComp.team?.displayName || homeComp.team?.name || 'Home Team',
           abbreviation: homeComp.team?.abbreviation || 'HOM',
           score: homeScore,
-          logo: homeComp.team?.logo || Utils.getTeamLogoFallback(homeComp.team?.name),
+          logo: homeComp.team?.logos?.[0]?.href || homeComp.team?.logo || Utils.getTeamLogoFallback(homeComp.team?.name),
           color: homeComp.team?.color ? `#${homeComp.team.color}` : '#00D26A'
         },
         awayTeam: {
@@ -279,7 +301,7 @@ const ApiService = {
           displayName: awayComp.team?.displayName || awayComp.team?.name || 'Away Team',
           abbreviation: awayComp.team?.abbreviation || 'AWY',
           score: awayScore,
-          logo: awayComp.team?.logo || Utils.getTeamLogoFallback(awayComp.team?.name),
+          logo: awayComp.team?.logos?.[0]?.href || awayComp.team?.logo || Utils.getTeamLogoFallback(awayComp.team?.name),
           color: awayComp.team?.color ? `#${awayComp.team.color}` : '#A0AAA4'
         },
         status: status,
