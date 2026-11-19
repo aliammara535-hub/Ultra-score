@@ -116,6 +116,50 @@ const ApiService = {
   },
 
   /**
+   * Fetch default matchday / gameweek fixtures across competitions (no date restriction)
+   * Returns current round including upcoming fixtures and active/recent matches
+   */
+  async fetchDefaultScoreboard(forceRefresh = false) {
+    const cacheKey = 'matches_default_gameweek';
+    if (!forceRefresh) {
+      const cached = window.appCache.get(cacheKey);
+      if (cached && cached.length > 0) return cached;
+    }
+    const priorityLeagues = ApiConfig.COMPETITIONS.map(c => c.id);
+    const matches = await this.fetchMultiLeagueScoreboard(priorityLeagues, null, forceRefresh);
+    window.appCache.set(cacheKey, matches, window.appCache.TTL.TODAY_MATCHES);
+    return matches;
+  },
+
+  /**
+   * Fetch recent finished match results (historical completed fixtures)
+   */
+  async fetchRecentFinishedMatches(forceRefresh = false) {
+    const cacheKey = 'matches_recent_finished';
+    if (!forceRefresh) {
+      const cached = window.appCache.get(cacheKey);
+      if (cached && cached.length > 0) return cached;
+    }
+
+    // Check recent match dates
+    const recentDates = ['20261117', '20261116', '20261115', '20261114', '20261108', '20261107'];
+    const leagues = ApiConfig.COMPETITIONS.map(c => c.id);
+
+    const allFinished = [];
+    for (const d of recentDates) {
+      const dayMatches = await this.fetchMultiLeagueScoreboard(leagues, d, forceRefresh);
+      const finished = dayMatches.filter(m => m.status.isFinished);
+      if (finished.length > 0) {
+        allFinished.push(...finished);
+        if (allFinished.length >= 10) break;
+      }
+    }
+
+    window.appCache.set(cacheKey, allFinished, window.appCache.TTL.HISTORICAL_MATCHES);
+    return allFinished;
+  },
+
+  /**
    * Fetch full match summary: events timeline, boxscore stats, lineups, officials, venue
    */
   async fetchMatchDetails(leagueId, eventId, forceRefresh = false) {

@@ -20,8 +20,9 @@ const Fixtures = {
   init() {
     this.selectedDate = new Date();
     this.renderDateStrip();
-    this.loadMatchesForDate(this.selectedDate);
     this.setupListeners();
+    // Load default round matches: includes upcoming weekend games and active fixtures
+    this.loadDefaultRoundMatches();
   },
 
   /**
@@ -116,9 +117,9 @@ const Fixtures = {
   },
 
   /**
-   * Change sub-filter (all, live, finished, upcoming)
+   * Change sub-filter (all, live, finished, upcoming, favorites)
    */
-  setFilter(filterType) {
+  async setFilter(filterType) {
     this.activeFilter = filterType;
 
     // Update tab UI
@@ -126,7 +127,118 @@ const Fixtures = {
       btn.classList.toggle('active', btn.dataset.filter === filterType);
     });
 
+    // If switching to 'upcoming' and no upcoming matches in current cache:
+    if (filterType === 'upcoming') {
+      const hasUpcoming = this.cachedMatches.some(m => !m.status.isFinished && !m.status.isLive);
+      if (!hasUpcoming) {
+        await this.loadUpcomingMatches();
+        return;
+      }
+    }
+
+    // If switching to 'finished' and no finished matches in current cache:
+    if (filterType === 'finished') {
+      const hasFinished = this.cachedMatches.some(m => m.status.isFinished);
+      if (!hasFinished) {
+        await this.loadFinishedMatches();
+        return;
+      }
+    }
+
+    // If switching to 'all' and current cache is empty:
+    if (filterType === 'all' && this.cachedMatches.length === 0) {
+      await this.loadDefaultRoundMatches();
+      return;
+    }
+
     this.applyFilterAndRender();
+  },
+
+  /**
+   * Load default round / gameweek fixtures (includes all upcoming weekend fixtures)
+   */
+  async loadDefaultRoundMatches(forceRefresh = false) {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+
+    this.isLoading = true;
+    container.innerHTML = `
+      <div class="loading-state-card">
+        <div class="spinner"></div>
+        <p>Loading real football fixtures &amp; upcoming matchday schedule...</p>
+      </div>
+    `;
+
+    try {
+      // First try fetching for current date (today)
+      let matches = await ApiService.fetchMatchesByDate(this.selectedDate, forceRefresh);
+
+      // If today has 0 matches (e.g. midweek), automatically fetch the active gameweek fixtures!
+      if (!matches || matches.length === 0) {
+        matches = await ApiService.fetchDefaultScoreboard(forceRefresh);
+      }
+
+      this.cachedMatches = matches || [];
+      this.applyFilterAndRender();
+    } catch (e) {
+      console.warn('[Fixtures] Error fetching default matches:', e.message);
+      this.cachedMatches = [];
+      this.applyFilterAndRender();
+    } finally {
+      this.isLoading = false;
+    }
+  },
+
+  /**
+   * Load upcoming fixtures across all competitions
+   */
+  async loadUpcomingMatches(forceRefresh = false) {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+
+    this.isLoading = true;
+    container.innerHTML = `
+      <div class="loading-state-card">
+        <div class="spinner"></div>
+        <p>Loading upcoming fixtures across all competitions...</p>
+      </div>
+    `;
+
+    try {
+      const matches = await ApiService.fetchDefaultScoreboard(forceRefresh);
+      this.cachedMatches = matches || [];
+      this.applyFilterAndRender();
+    } catch (e) {
+      this.applyFilterAndRender();
+    } finally {
+      this.isLoading = false;
+    }
+  },
+
+  /**
+   * Load completed match results (FT) from recent matchdays
+   */
+  async loadFinishedMatches(forceRefresh = false) {
+    const container = document.getElementById(this.containerId);
+    if (!container) return;
+
+    this.isLoading = true;
+    container.innerHTML = `
+      <div class="loading-state-card">
+        <div class="spinner"></div>
+        <p>Loading recent completed match results (FT)...</p>
+      </div>
+    `;
+
+    try {
+      const matches = await ApiService.fetchRecentFinishedMatches(forceRefresh);
+      this.cachedMatches = matches || [];
+      this.applyFilterAndRender();
+    } catch (e) {
+      this.applyFilterAndRender();
+    } finally {
+      this.isLoading = false;
+    }
   },
 
   /**
@@ -209,7 +321,7 @@ const Fixtures = {
       if (this.activeFilter === 'favorites') {
         container.innerHTML = Utils.createEmptyStateHtml({
           title: 'No Favorite Matches Scheduled',
-          message: 'None of your favorited clubs or competitions have matches scheduled on this date. Star your favorite clubs to track them here anytime.',
+          message: 'None of your favorited clubs or competitions have matches scheduled in this view. Star your favorite clubs to track them here anytime.',
           icon: 'live',
           actionBtn: {
             text: 'Browse All Matches',
@@ -219,21 +331,39 @@ const Fixtures = {
         return;
       }
 
-      let emptyMsg = `No matches found for ${Utils.formatLocalDate(this.selectedDate.toISOString(), 'short')}`;
-      if (this.activeFilter !== 'all') {
-        emptyMsg += ` matching '${this.activeFilter}' status`;
+      if (this.activeFilter === 'upcoming') {
+        container.innerHTML = Utils.createEmptyStateHtml({
+          title: 'No Upcoming Matches on Selected Date',
+          message: 'No matches scheduled on this specific date. Click below to load upcoming matchday fixtures across all leagues.',
+          icon: 'calendar',
+          actionBtn: {
+            text: 'Load Upcoming Matchday',
+            onClick: "Fixtures.loadUpcomingMatches(true)"
+          }
+        });
+        return;
       }
-      if (this.searchTerm) {
-        emptyMsg += ` matching "${this.searchTerm}"`;
+
+      if (this.activeFilter === 'finished') {
+        container.innerHTML = Utils.createEmptyStateHtml({
+          title: 'No Finished Matches on Selected Date',
+          message: 'No completed matches recorded on this specific date. Click below to load recent completed match results (FT).',
+          icon: 'calendar',
+          actionBtn: {
+            text: 'Load Recent Results (FT)',
+            onClick: "Fixtures.loadFinishedMatches(true)"
+          }
+        });
+        return;
       }
 
       container.innerHTML = Utils.createEmptyStateHtml({
-        title: 'No Matches Scheduled',
-        message: `${emptyMsg}. Try selecting another date on the calendar or checking a different competition.`,
+        title: 'No Matches Scheduled for ' + Utils.formatLocalDate(this.selectedDate.toISOString(), 'short'),
+        message: 'There are no fixtures scheduled on this date. Explore upcoming matchday fixtures or check recent completed results.',
         icon: 'calendar',
         actionBtn: {
-          text: 'View Next Fixtures',
-          onClick: 'Fixtures.navigateNextDay()'
+          text: 'Explore Upcoming Fixtures',
+          onClick: 'Fixtures.loadUpcomingMatches(true)'
         }
       });
       return;
@@ -320,7 +450,7 @@ const Fixtures = {
     return `
       <div class="match-card ${status.isLive ? 'live-border' : ''}" onclick="MatchDetails.open('${match.leagueId}', '${match.id}')">
         <div class="match-card-header">
-          <span class="card-time-utc">${Utils.formatLocalDate(match.date, 'short')}</span>
+          <span class="card-time-utc">${Utils.formatLocalDate(match.date, 'short')} • ${Utils.formatLocalTime(match.date)}</span>
           <span class="venue-pill">${match.venue ? `📍 ${match.venue}` : ''}</span>
         </div>
 
@@ -362,7 +492,7 @@ const Fixtures = {
   },
 
   scrollToTodaysMatches() {
-    this.setDate(new Date());
+    this.setFilter('all');
     const el = document.getElementById('fixtures-section');
     if (el) el.scrollIntoView({ behavior: 'smooth' });
   }
