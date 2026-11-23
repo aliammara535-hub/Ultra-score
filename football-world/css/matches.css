@@ -1,31 +1,33 @@
 /**
  * Ultra Score / Football World - Matches & Cards Stylesheet
+ * Premium Sports Dashboard Layout (FotMob / SofaScore Inspired)
  */
 
 /* =========================================
    LIVE SECTION & PULSE BADGES
    ========================================= */
 .live-matches-section {
-  margin-bottom: 2.5rem;
+  margin-bottom: 2rem;
 }
 
 .live-pulse-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  background: rgba(0, 210, 106, 0.15);
+  background: rgba(0, 210, 106, 0.12);
   color: var(--color-green-primary);
-  border: 1px solid var(--color-green-primary);
-  padding: 0.25rem 0.65rem;
-  border-radius: var(--radius-xl);
-  font-size: 0.75rem;
+  border: 1px solid rgba(0, 210, 106, 0.3);
+  padding: 0.22rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
 }
 
 .pulse-dot {
-  width: 8px;
-  height: 8px;
+  width: 7px;
+  height: 7px;
   background-color: var(--color-green-primary);
   border-radius: 50%;
   box-shadow: 0 0 0 0 rgba(0, 210, 106, 0.7);
@@ -48,7 +50,7 @@
   }
   70% {
     transform: scale(1.15);
-    box-shadow: 0 0 0 8px rgba(0, 210, 106, 0);
+    box-shadow: 0 0 0 7px rgba(0, 210, 106, 0);
   }
   100% {
     transform: scale(0.95);
@@ -63,11 +65,12 @@
   background: var(--color-card-bg);
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-lg);
-  padding: 1.25rem;
+  padding: 1.15rem;
   margin-bottom: 1.75rem;
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: 1rem;
+  box-shadow: var(--shadow-sm);
 }
 
 .filter-row-top {
@@ -78,34 +81,50 @@
   flex-wrap: wrap;
 }
 
+/* FotMob-style Segmented Filter Tabs */
 .filter-tabs-group {
-  display: flex;
-  background: #0d1410;
+  display: inline-flex;
+  align-items: center;
+  background: #0A0F0D;
   padding: 0.25rem;
   border-radius: var(--radius-md);
   border: 1px solid var(--color-card-border);
   gap: 0.25rem;
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filter-tabs-group::-webkit-scrollbar {
+  display: none;
 }
 
 .filter-tab-btn {
   background: transparent;
   border: none;
   color: var(--color-muted-gray);
-  padding: 0.45rem 1rem;
-  font-size: 0.85rem;
+  padding: 0.45rem 0.95rem;
+  font-size: 0.82rem;
   font-weight: 600;
   border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
-.filter-tab-btn.active, .filter-tab-btn:hover {
-  background: #192920;
+.filter-tab-btn:hover {
   color: var(--color-white);
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .filter-tab-btn.active {
+  background: #15241D;
   color: var(--color-green-primary);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(0, 210, 106, 0.25);
 }
 
 .filter-row-inputs {
@@ -117,108 +136,127 @@
 
 .search-input-box {
   position: relative;
-  min-width: 240px;
+  min-width: 220px;
   flex: 1;
 }
 
 .search-icon {
   position: absolute;
-  left: 0.9rem;
+  left: 0.85rem;
   top: 50%;
   transform: translateY(-50%);
+  font-size: 0.85rem;
   color: var(--color-muted-gray);
   pointer-events: none;
 }
 
 .search-input-box input {
   width: 100%;
-  background: #0d1410;
+  background: #0A0F0D;
   border: 1px solid var(--color-card-border);
-  padding: 0.55rem 0.9rem 0.55rem 2.4rem;
+  padding: 0.5rem 0.85rem 0.5rem 2.3rem;
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--color-white);
-  transition: var(--transition-fast);
+  transition: all var(--transition-fast);
+}
+
+.search-input-box input::placeholder {
+  color: #64748B;
 }
 
 .search-input-box input:focus {
   outline: none;
   border-color: var(--color-green-primary);
-  box-shadow: 0 0 0 2px var(--color-green-glow);
+  background: #0D1511;
+  box-shadow: 0 0 0 2px rgba(0, 210, 106, 0.2);
 }
 
 .comp-select-dropdown {
-  background: #0d1410;
+  background: #0A0F0D;
   border: 1px solid var(--color-card-border);
-  padding: 0.55rem 1rem;
+  padding: 0.5rem 1rem;
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--color-white);
   cursor: pointer;
+  transition: all var(--transition-fast);
+  max-width: 260px;
 }
 
 .comp-select-dropdown:focus {
   outline: none;
   border-color: var(--color-green-primary);
+  box-shadow: 0 0 0 2px rgba(0, 210, 106, 0.2);
 }
 
 .date-picker-box input {
-  background: #0d1410;
+  background: #0A0F0D;
   border: 1px solid var(--color-card-border);
-  padding: 0.5rem 0.8rem;
+  padding: 0.45rem 0.75rem;
   border-radius: var(--radius-md);
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   color: var(--color-white);
   cursor: pointer;
+  transition: all var(--transition-fast);
 }
 
-/* Date Strip Track */
+.date-picker-box input:focus {
+  outline: none;
+  border-color: var(--color-green-primary);
+}
+
+/* =========================================
+   DATE STRIP TRACK (Horizontal FotMob Pill Carousel)
+   ========================================= */
 .date-strip-track {
   display: flex;
   align-items: center;
   gap: 0.5rem;
   overflow-x: auto;
-  padding-bottom: 0.25rem;
+  padding: 0.25rem 0.15rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  scroll-snap-type: x mandatory;
 }
 
 .date-strip-track::-webkit-scrollbar {
-  height: 4px;
-}
-
-.date-strip-track::-webkit-scrollbar-thumb {
-  background: var(--color-card-border);
-  border-radius: 4px;
+  display: none;
 }
 
 .date-strip-btn {
   flex: 1;
-  min-width: 110px;
-  background: #0d1410;
+  min-width: 95px;
+  background: #0A0F0D;
   border: 1px solid var(--color-card-border);
-  padding: 0.6rem 0.5rem;
+  padding: 0.55rem 0.45rem;
   border-radius: var(--radius-md);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.2rem;
+  gap: 0.15rem;
   cursor: pointer;
-  transition: var(--transition-fast);
+  transition: all var(--transition-fast);
+  scroll-snap-align: start;
 }
 
 .date-strip-btn:hover {
-  background: #17241d;
-  border-color: var(--color-green-secondary);
+  background: #141E19;
+  border-color: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
 }
 
 .date-strip-btn.active {
-  background: #163022;
+  background: #0F2A1C;
   border-color: var(--color-green-primary);
-  box-shadow: 0 2px 10px var(--color-green-glow);
+  box-shadow: 0 2px 12px rgba(0, 210, 106, 0.2);
 }
 
 .date-strip-btn .day-rel {
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
   color: var(--color-muted-gray);
 }
 
@@ -227,104 +265,134 @@
 }
 
 .date-strip-btn .day-num {
-  font-size: 0.75rem;
-  color: var(--color-muted-gray);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-white);
+}
+
+.date-strip-btn.is-today:not(.active) {
+  border-color: rgba(0, 210, 106, 0.35);
 }
 
 .date-strip-btn.is-today .day-rel {
-  color: var(--color-white);
+  color: var(--color-green-primary);
 }
 
 /* =========================================
    COMPETITION GROUPS & MATCH CARDS
    ========================================= */
 .competition-group {
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .group-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.75rem 1rem;
-  background: #131c17;
+  padding: 0.7rem 1.15rem;
+  background: #111814;
   border: 1px solid var(--color-card-border);
   border-radius: var(--radius-md) var(--radius-md) 0 0;
-  border-bottom: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
 }
 
 .group-title {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  transition: opacity var(--transition-fast);
+}
+
+.group-title:hover {
+  opacity: 0.85;
 }
 
 .comp-icon {
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.4));
 }
 
 .group-name {
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 700;
   color: var(--color-white);
+  letter-spacing: -0.2px;
 }
 
 .group-count {
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   color: var(--color-muted-gray);
+  background: rgba(255, 255, 255, 0.06);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  font-weight: 600;
 }
 
 .matches-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 1rem;
-  background: var(--color-card-bg);
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 0.85rem;
+  background: #090E0C;
   border: 1px solid var(--color-card-border);
+  border-top: none;
   border-radius: 0 0 var(--radius-md) var(--radius-md);
-  padding: 1rem;
+  padding: 0.95rem;
 }
 
-/* Single Match Card */
+/* =========================================
+   PREMIUM MATCH CARD (FotMob / SofaScore Inspired)
+   ========================================= */
 .match-card {
-  background: #101713;
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--color-card-bg);
+  border: 1px solid var(--color-card-border);
   border-radius: var(--radius-md);
-  padding: 1rem;
+  padding: 0.9rem 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.85rem;
+  gap: 0.75rem;
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
 }
 
 .match-card:hover {
   transform: translateY(-2px);
-  border-color: var(--color-green-primary);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4), 0 0 12px var(--color-green-glow);
+  border-color: rgba(0, 210, 106, 0.35);
+  background: var(--color-card-elevated);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55), 0 0 12px rgba(0, 210, 106, 0.15);
 }
 
 .match-card.live-border {
-  border-color: rgba(0, 210, 106, 0.4);
+  border-color: rgba(0, 210, 106, 0.5);
+  box-shadow: 0 0 16px rgba(0, 210, 106, 0.15);
 }
 
 .match-card-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   color: var(--color-muted-gray);
   border-bottom: 1px solid rgba(255, 255, 255, 0.04);
-  padding-bottom: 0.5rem;
+  padding-bottom: 0.45rem;
+  gap: 0.5rem;
+}
+
+.card-time-utc {
+  font-weight: 500;
+  letter-spacing: 0.2px;
 }
 
 .venue-pill {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 170px;
+  max-width: 160px;
+  color: var(--color-text-dim);
+  font-size: 0.7rem;
 }
 
 /* Match Card Body Layout */
@@ -333,7 +401,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
-  padding: 0.25rem 0;
+  padding: 0.15rem 0;
 }
 
 .team-block {
@@ -341,19 +409,48 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.45rem;
   text-align: center;
+  min-width: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.team-block:hover {
+  opacity: 0.85;
 }
 
 .team-badge-lg {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   object-fit: contain;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
 }
 
 .match-card:hover .team-badge-lg {
   transform: scale(1.08);
+}
+
+.team-fav-btn {
+  background: transparent;
+  border: none;
+  color: #334155;
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: var(--radius-xs);
+  transition: all var(--transition-fast);
+  line-height: 1;
+}
+
+.team-fav-btn:hover {
+  color: #E2E8F0;
+  transform: scale(1.15);
+}
+
+.team-fav-btn.active {
+  color: #F59E0B;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.4);
 }
 
 .team-title {
@@ -365,11 +462,12 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  height: 2.5em;
+  word-break: break-word;
+  max-width: 100%;
 }
 
 .team-title.winner {
-  color: var(--color-green-primary);
+  color: var(--color-white);
   font-weight: 700;
 }
 
@@ -379,122 +477,99 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.35rem;
-  min-width: 80px;
+  gap: 0.3rem;
+  min-width: 84px;
+  flex-shrink: 0;
 }
 
 .score-display {
-  font-size: 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 1.55rem;
   font-weight: 800;
-  letter-spacing: 2px;
+  letter-spacing: 1px;
   color: var(--color-white);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
 }
 
 .kickoff-time {
-  font-size: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 1.2rem;
   font-weight: 800;
   color: var(--color-white);
   letter-spacing: 0.5px;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Status Badges */
 .status-pill {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   padding: 0.2rem 0.55rem;
-  border-radius: var(--radius-xl);
+  border-radius: var(--radius-full);
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.4px;
+  line-height: 1;
+  white-space: nowrap;
 }
 
 .status-live {
-  background: rgba(0, 210, 106, 0.2);
+  background: rgba(0, 210, 106, 0.15);
   color: var(--color-green-primary);
-  border: 1px solid var(--color-green-primary);
+  border: 1px solid rgba(0, 210, 106, 0.4);
+  box-shadow: 0 0 8px rgba(0, 210, 106, 0.2);
 }
 
 .status-finished {
-  background: #1a2720;
+  background: #141E18;
   color: var(--color-muted-gray);
   border: 1px solid var(--color-card-border);
 }
 
 .status-scheduled {
-  background: #111a14;
-  color: var(--color-green-primary);
-  border: 1px solid rgba(0, 210, 106, 0.3);
+  background: #0E1612;
+  color: var(--color-muted-gray);
+  border: 1px solid var(--color-card-border);
 }
 
 .status-postponed {
-  background: rgba(255, 204, 0, 0.15);
+  background: var(--color-yellow-subtle);
   color: var(--color-yellow-card);
-  border: 1px solid var(--color-yellow-card);
+  border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .status-cancelled {
-  background: rgba(255, 59, 48, 0.15);
+  background: var(--color-red-subtle);
   color: var(--color-red-card);
-  border: 1px solid var(--color-red-card);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }
 
-/* Live Card horizontal row variant */
-.live-card .match-teams-layout {
-  display: flex;
-  flex-direction: column;
-  gap: 0.6rem;
-}
-
-.team-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.team-identity {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  overflow: hidden;
-}
-
-.team-badge {
-  width: 28px;
-  height: 28px;
-  object-fit: contain;
-  flex-shrink: 0;
-}
-
-.team-name {
-  font-size: 0.9rem;
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.live-score-num {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--color-green-primary);
-}
-
+/* Card Footer */
 .match-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid rgba(255, 255, 255, 0.04);
-  padding-top: 0.6rem;
-  font-size: 0.75rem;
+  padding-top: 0.55rem;
+  font-size: 0.72rem;
   color: var(--color-muted-gray);
 }
 
-.view-details-tag, .action-link {
-  color: var(--color-green-primary);
-  font-weight: 600;
+.footer-note {
+  font-size: 0.72rem;
+  color: var(--color-text-dim);
 }
 
-.match-card:hover .view-details-tag,
-.match-card:hover .action-link {
-  text-decoration: underline;
+.view-details-tag {
+  color: var(--color-green-primary);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.2rem;
+  transition: transform var(--transition-fast);
+}
+
+.match-card:hover .view-details-tag {
+  transform: translateX(2px);
+  color: var(--color-green-hover);
 }
